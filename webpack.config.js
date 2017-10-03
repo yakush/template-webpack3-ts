@@ -1,7 +1,15 @@
 var path = require('path');
 var webpack = require('webpack');
 
-module.exports = {
+var minimize = false;
+process.argv.forEach(function (opt) {
+    if (opt === "-p")
+        minimize = true;
+});
+
+//-------------------------------------------------------
+// defaults
+var config = {
 
     entry: './src/app.ts',
     output: {
@@ -11,7 +19,7 @@ module.exports = {
     },
     module: {
         rules: [
-           
+
             {
                 test: /\.css$/,
                 use: [
@@ -31,9 +39,19 @@ module.exports = {
         extensions: [".tsx", ".ts", ".js"]
     },
     plugins: [
+    ]
+};
+
+//-------------------------------------------------------
+// extra prod options
+if (minimize) {
+    config.plugins.push(
         new webpack.optimize.UglifyJsPlugin({
             // ...
         })
-    ]
+    )
+}
 
-};
+//-------------------------------------------------------
+//export
+module.exports = config;
